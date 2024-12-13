@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        p{
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    
+    <script>
+
+
+    const compras = {
+    "producto":[],
+    "cantidad":[],
+    "precio":[]
+    }
+        
+  
+
+const cantidad = Number(prompt('Ingrese la cantidad'))
+for(let i = 0; i < cantidad; i++){
+    for(let key in compras){
+        compras[key][i] = prompt(`Ingrese ${key}`);
+    }
+
+}
+
+let cont = 0
+
+for(let i = 0; i < cantidad; i++){
+    
+    for(let key in compras){
+        // document.write(`<p> ${key}: ${compras[key][i]}</p> <br>`)
+        document.write(key +" : "+ compras[key][i]+ "<br>")
+    }
+    cont+= Number(compras['precio'][i] * compras['cantidad'][i])
+    document.write('--------------------------------------------------------------' + "<br>")
+}
+
+document.write(`<br> <p> Total : ${cont }</p>`)
+    </script>
+</body>
+</html>
