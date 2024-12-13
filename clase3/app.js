@@ -26,6 +26,8 @@ const ACCEPTED_ORIGINS = [
   es como una peticion previa antes de hace el metodo complejo
 */
 
+/* Nota: AL FINAL DE TODO CUANDO SE HABLE DE CORS NO ES MAS QUE PROBLEMAS DE CABECERAS HEADERS */
+
 app.get('/movies', (req, res) => {
   // este header permite, el acceso con (*) el acceso a todos los origines desconocidos
   const origin = req.header('origin') // obtener el origin de donde se reliza la peticion
@@ -98,12 +100,24 @@ app.patch('/movies/:id', (req, res) => {
   return res.status(200).json(peliculActulizado)
 })
 
-// app.use((err, req, res) => {
-//   res.status(400).json({ error: JSON.parse(err.message) })
-// })
+app.options('*', (req, res) => {
+  const origin = req.header('origin') // obtener el origin de donde se reliza la peticion
+  if (ACCEPTED_ORIGINS.includes(origin) || !origin) {
+    res.setHeader('Access-Control-Allow-Origin', origin)
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS')
+  }
+  res.sendStatus(200) // Sin contenido
+})
 
 app.delete('/movies/:id', (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*')
+  // este header permite, el acceso con (*) el acceso a todos los origines desconocidos
+  const origin = req.header('origin') // obtener el origin de donde se reliza la peticion
+
+  // cuando se esta en el mismo origin el res.header no lo atrae por eso
+  // si !origin significa que esta en su mismo origin, por lo que debe entar tambien el if
+  if (ACCEPTED_ORIGINS.includes(origin) || !origin) {
+    res.setHeader('Access-Control-Allow-Origin', origin)
+  }
   const { id } = req.params
   const movieIndex = movies.findIndex(movie => movie.id === id)
 
@@ -115,14 +129,6 @@ app.delete('/movies/:id', (req, res) => {
   return res.json({ message: 'Movie delete' })
 })
 
-app.options('*', (req, res) => {
-  const origin = req.header('origin') // obtener el origin de donde se reliza la peticion
-  if (ACCEPTED_ORIGINS.includes(origin) || !origin) {
-    res.setHeader('Access-Control-Allow-Origin', origin)
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS')
-  }
-  res.sendStatus(200) // Sin contenido
-})
 app.listen(port, () => {
   console.log('Escuchando en el puerto: http://localhost:' + port)
 })
